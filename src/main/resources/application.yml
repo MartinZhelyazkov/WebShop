@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: web_shop
+  datasource:
+    url: jdbc:mysql://localhost:3306/web_shop?createDatabaseIfNotExist=true
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: root
+   # password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    format-sql: true
