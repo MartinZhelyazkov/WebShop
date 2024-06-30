@@ -1,5 +1,6 @@
 package com.web_shop.shop.advice;
-import com.web_shop.shop.exception.RecordNotFoundException;
+import com.web_shop.shop.advice.exception.EmailAlreadyExistException;
+import com.web_shop.shop.advice.exception.RecordNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -23,5 +24,9 @@ public class GlobalExceptionHandler {
             errors.put(fieldName,message);
         });
         return new ResponseEntity<>(errors,HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(EmailAlreadyExistException.class)
+    public ResponseEntity<?> handleEmailAlreadyExistException(EmailAlreadyExistException emailAlreadyExistException){
+        return new ResponseEntity<>(emailAlreadyExistException.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
