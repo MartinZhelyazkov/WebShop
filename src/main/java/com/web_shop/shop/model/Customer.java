@@ -1,10 +1,13 @@
 package com.web_shop.shop.model;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.Set;
+
+import java.util.List;
+
 @Entity
 @Table(name = "customers")
 @Getter
@@ -20,8 +23,15 @@ public class Customer {
     private String lastName;
     @Column(unique = true)
     private String email;
-    private String address;
-    @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
-    private Set<Order> orders;
+    private List<Address> addresses;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Order> orders;
+
+    public void addAddress(Address address) {
+        addresses.add(address);
+        address.setCustomer(this);
+    }
 }
