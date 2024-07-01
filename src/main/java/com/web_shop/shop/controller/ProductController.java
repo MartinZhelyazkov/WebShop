@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/product")
@@ -41,6 +42,11 @@ public class ProductController {
     })
     void addProduct(@Valid @RequestBody ProductRequest productRequest) {
         productServiceImpl.addProduct(productRequest);
+    }
+
+    @PostMapping(path="/add-list")
+    void addProduct(@Valid @RequestBody Set<ProductRequest> productRequest) {
+        productServiceImpl.addProducts(productRequest);
     }
 
     @GetMapping("/{productId}")

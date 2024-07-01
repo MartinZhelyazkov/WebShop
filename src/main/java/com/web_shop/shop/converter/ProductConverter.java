@@ -8,33 +8,24 @@ import com.web_shop.shop.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class ProductConverter {
 
-    private final OrderRepository orderRepository;
-
-    @Autowired
-    public ProductConverter(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
-    }
-
     public Product toProduct(ProductRequest productRequest) {
-        Optional<Order> order = orderRepository.findById(productRequest.getOrderId());
-        if (order.isEmpty()) {
-            throw new RecordNotFoundException(String.format("Order with id %s not found", productRequest.getOrderId()));
-        }
-        Order existingOrder = order.get();
-        List<Order> orders = new ArrayList<>();
-        orders.add(existingOrder);
         Product product = new Product();
         product.setName(productRequest.getName());
         product.setPrice(productRequest.getPrice());
-        product.setOrders(orders);
         return product;
+    }
+
+    public Set<Product> toProductsList(Set<ProductRequest> productRequests){
+        Set<Product> products = new HashSet<>();
+        for (ProductRequest productReq: productRequests) {
+            products.add(toProduct(productReq));
+        }
+        return products;
     }
 
 }

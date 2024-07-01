@@ -15,6 +15,4 @@ public class ProductRequest {
     @NotNull(message = "Price can't be null")
     @Positive(message = "Price must be positive")
     private double price;
-    @NotNull(message = "Product must be to an order")
-    private Long orderId;
 }

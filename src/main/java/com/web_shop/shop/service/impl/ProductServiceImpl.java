@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -32,11 +33,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void addProduct(ProductRequest productRequest) {
         Product product = productConverter.toProduct(productRequest);
-        Order order = orderRepository.findById(productRequest.getOrderId())
-                .orElseThrow(() -> new RecordNotFoundException(String.format("Order with id %S not found", productRequest.getOrderId())));
-        order.addProducts(product);
         productRepository.save(product);
     }
+
+    @Override
+    public void addProducts(Set<ProductRequest> productRequest) {
+        productRepository.saveAll(productConverter.toProductsList(productRequest));
+    }
+
 
     @Override
     public ProductResponse findProductById(Long productId) {
@@ -62,12 +66,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void updateProduct(ProductRequest productRequest, Long productId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RecordNotFoundException(String.format("Product with id %S not found", productId)));
-        Order order = orderRepository.findById(productRequest.getOrderId())
-                .orElseThrow(() -> new RecordNotFoundException(String.format("Order with id %S not found", productRequest.getOrderId())));
-        List<Order> orders = product.getOrders();
-        orders.add(order);
-        product.setOrders(orders);
+                .orElseThrow(
+                        () -> new RecordNotFoundException(String.format("Product with id %S not found", productId)));
         product.setName(productRequest.getName());
         product.setPrice(productRequest.getPrice());
         productRepository.save(product);

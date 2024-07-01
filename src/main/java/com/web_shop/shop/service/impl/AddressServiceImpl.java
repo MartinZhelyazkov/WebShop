@@ -38,7 +38,7 @@ public class AddressServiceImpl implements AddressService {
         } else {
             Customer customer = existingCustomer.get();
             Address address = addressConverter.toAddress(addressRequest);
-            customer.addAddress(address);
+            address.setCustomer(customer);
             addressRepository.save(address);
         }
     }

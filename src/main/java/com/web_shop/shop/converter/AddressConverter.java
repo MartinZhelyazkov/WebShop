@@ -21,16 +21,11 @@ public class AddressConverter {
     }
 
     public Address toAddress(AddressRequest addressRequest) {
-        Optional<Customer> customer = customerRepository.findById(addressRequest.getCustomerId());
-        if (customer.isEmpty()) {
-            throw new RecordNotFoundException(String.format("Customer with id %s not found", addressRequest.getCustomerId()));
-        }
         Address address = new Address();
         address.setCity(addressRequest.getCity());
         address.setCountry(addressRequest.getCountry());
         address.setStreet(addressRequest.getStreet());
         address.setPostalCode(addressRequest.getPostalCode());
-        address.setCustomer(customer.get());
         return address;
     }
 }
