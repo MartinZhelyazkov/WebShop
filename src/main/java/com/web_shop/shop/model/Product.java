@@ -24,4 +24,6 @@ public class Product {
     @ManyToMany(mappedBy = "products", fetch = FetchType.EAGER)
     @JsonBackReference
     private List<Order> orders;
+    @ManyToOne
+    private Customer customer;
 }

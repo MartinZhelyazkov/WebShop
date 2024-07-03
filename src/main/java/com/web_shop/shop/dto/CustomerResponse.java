@@ -16,4 +16,5 @@ public class CustomerResponse {
     private String email;
     private List<Address> addresses;
     private List<Order> orders;
+    private String jwt;
 }

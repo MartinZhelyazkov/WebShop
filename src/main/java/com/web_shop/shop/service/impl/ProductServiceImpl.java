@@ -4,7 +4,6 @@ import com.web_shop.shop.converter.ProductConverter;
 import com.web_shop.shop.dto.ProductRequest;
 import com.web_shop.shop.dto.ProductResponse;
 import com.web_shop.shop.advice.exception.RecordNotFoundException;
-import com.web_shop.shop.model.Order;
 import com.web_shop.shop.model.Product;
 import com.web_shop.shop.repository.OrderRepository;
 import com.web_shop.shop.repository.ProductRepository;
@@ -22,12 +21,14 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ProductConverter productConverter;
     private final OrderRepository orderRepository;
+    private final CurrentCustomerService customerService;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, ProductConverter productConverter, OrderRepository orderRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, ProductConverter productConverter, OrderRepository orderRepository, CurrentCustomerService customerService) {
         this.productRepository = productRepository;
         this.productConverter = productConverter;
         this.orderRepository = orderRepository;
+        this.customerService = customerService;
     }
 
     @Override
@@ -68,6 +69,11 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(
                         () -> new RecordNotFoundException(String.format("Product with id %S not found", productId)));
+
+        boolean match = customerService.isCurrentUserMatchOwner(product.getCustomer());
+        if(!match){
+          throw new RecordNotFoundException("Customer cannot update this product");
+        }
         product.setName(productRequest.getName());
         product.setPrice(productRequest.getPrice());
         productRepository.save(product);
