@@ -38,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
         Optional<Customer> existingCustomer = customerRepository.findById(orderRequest.getCustomerId());
         if (existingCustomer.isEmpty()) {
             throw new RecordNotFoundException(String.format("Customer with id %S not found", orderRequest.getCustomerId()));
-        }else {
+        } else {
             Customer customer = existingCustomer.get();
             Order order = orderConverter.toOrder(orderRequest);
             order.setCustomer(customer);

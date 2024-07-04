@@ -2,7 +2,9 @@ package com.web_shop.shop.controller;
 
 import com.web_shop.shop.dto.CustomerRequest;
 import com.web_shop.shop.dto.CustomerResponse;
+import com.web_shop.shop.dto.LoginRequest;
 import com.web_shop.shop.model.Customer;
+import com.web_shop.shop.service.CustomerService;
 import com.web_shop.shop.service.impl.CustomerServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,9 +25,8 @@ import java.util.List;
 @Tag(name = "Customer API", description = "API for managing customers")
 public class CustomerController {
     @Autowired
-    CustomerServiceImpl customerServiceImp;
+    CustomerService customerService;
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     @Operation(summary = "Creating customer")
     @ApiResponses(value = {
@@ -36,8 +37,13 @@ public class CustomerController {
                     , content = @Content(mediaType = "application/json"
                     , schema = @Schema(implementation = Customer.class)))
     })
-    void addCustomer(@Valid @RequestBody CustomerRequest customerRequest) {
-        customerServiceImp.addCustomer(customerRequest);
+    ResponseEntity<CustomerResponse> addCustomer(@Valid @RequestBody CustomerRequest customerRequest) {
+          return new ResponseEntity<>(customerService.addCustomer(customerRequest),HttpStatus.CREATED);
+    }
+
+    @PostMapping(path = "/auth")
+    ResponseEntity<String> login (@Valid @RequestBody LoginRequest loginRequest) {
+        return new ResponseEntity<>(customerService.login(loginRequest),HttpStatus.OK);
     }
 
     @GetMapping("/{customerId}")
@@ -51,7 +57,7 @@ public class CustomerController {
                     , schema = @Schema(implementation = Customer.class)))
     })
     ResponseEntity<CustomerResponse> findCustomerById(@Valid @PathVariable("customerId") Long customerId) {
-        return new ResponseEntity<>(customerServiceImp.findCustomerById(customerId), HttpStatus.FOUND);
+        return new ResponseEntity<>(customerService.findCustomerById(customerId), HttpStatus.FOUND);
     }
 
     @GetMapping
@@ -62,7 +68,7 @@ public class CustomerController {
                     , schema = @Schema(implementation = Customer.class)))
     })
     ResponseEntity<List<CustomerResponse>> findAllCustomers() {
-        return new ResponseEntity<>(customerServiceImp.findAllCustomer(), HttpStatus.FOUND);
+        return new ResponseEntity<>(customerService.findAllCustomer(), HttpStatus.FOUND);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -78,7 +84,7 @@ public class CustomerController {
     })
     void updateCustomer(@Valid @RequestBody CustomerRequest customerRequest,
                         @PathVariable("customerId") Long id) {
-        customerServiceImp.updateCustomer(customerRequest, id);
+        customerService.updateCustomer(customerRequest, id);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -90,6 +96,6 @@ public class CustomerController {
                     , schema = @Schema(implementation = Customer.class)))
     })
     void delCustomerById(@PathVariable("customerId") Long id) {
-        customerServiceImp.delCustomerById(id);
+        customerService.delCustomerById(id);
     }
 }

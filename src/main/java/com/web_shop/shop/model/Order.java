@@ -31,8 +31,4 @@ public class Order {
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> products;
 
-    public void addProducts(Product product) {
-        products.add(product);
-        product.addOrder(this);
-    }
 }
